@@ -5,33 +5,33 @@ import java.util.List;
 
 public class Vertice<T> {
     private T valor;
-    private List<Aresta> arestas;
+    private List<Aresta<T>> arestas;
 
     public Vertice(T valor) {
         this.valor = valor;
-        this.arestas = new ArrayList<Aresta>();
+        this.arestas = new ArrayList<>();
     }
 
     public T getValor() {
         return valor;
     }
 
-    public List<Aresta> getArestas() {
+    public List<Aresta<T>> getArestas() {
         return this.arestas;
     }
 
-    public void setArestas(List<Aresta> arestas) {
+    public void setArestas(List<Aresta<T>> arestas) {
         this.arestas = arestas;
     }
 
-    public void addAresta(Aresta aresta) {
+    public void addAresta(Aresta<T> aresta) {
         this.arestas.add(aresta);
     }
 
     @Override
     public String toString() {
         String output = "VERTICE: " + valor;
-        for(Aresta aresta : arestas) {
+        for(Aresta<T> aresta : arestas) {
             output += "\n" + aresta.toString();
         }
         return output;

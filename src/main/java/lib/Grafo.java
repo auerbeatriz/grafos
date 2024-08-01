@@ -1,65 +1,101 @@
 package lib;
 
-import exception.DuplicatedException;
-import exception.NotFoundException;
-
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class Grafo<T> implements GrafoInterface<T>{
-    List<Vertice> vertices;
+    List<Vertice<T>> vertices;
     String label;
 
     public Grafo() {
-        this.vertices = new ArrayList<Vertice>();
+        this.vertices = new ArrayList<>();
     }
 
     public Grafo(String label) {
         this.label = label;
-        this.vertices = new ArrayList<Vertice>();
+        this.vertices = new ArrayList<>();
     }
 
     @Override
     public void adicionarVertice(T elemento) {
-        Vertice vertice = this.estaNoGrafo(elemento);
-
-        if(vertice == null) {
-            vertice = new Vertice(elemento);
+        if(!this.contem(elemento)) {
+            Vertice<T> vertice = new Vertice<>(elemento);
             this.vertices.add(vertice);
         }
     }
 
     @Override
     public void adicionarAresta(T valorOrigem, T valorDestino, float peso) {
-        Vertice origem = this.estaNoGrafo(valorOrigem);
-        Vertice destino = this.estaNoGrafo(valorDestino);
+        Vertice<T> origem = this.getVertice(valorOrigem);
+        Vertice<T> destino = this.getVertice(valorDestino);
 
         if(origem != null && destino != null) {
-            Aresta aresta = new Aresta(origem, destino, peso);
+            Aresta<T> aresta = new Aresta<>(origem, destino, peso);
             origem.addAresta(aresta);
         }
     }
 
     @Override
-    public Grafo arvoreGeradoraMinima() {
-        return null;
+    public Grafo<T> arvoreGeradoraMinima() {
+        int verticesCount = this.vertices.size();
+        Map<T, List<Aresta<T>>> arestasByVertice = this.getArestasByVertice();
+
+        T verticeInicial = this.vertices.get(0).getValor();
+
+        Grafo<T> arvoreGeradoraMinima = new Grafo<>();
+        arvoreGeradoraMinima.adicionarVertice(verticeInicial);
+
+        PriorityQueue<Aresta<T>> minHeap = new PriorityQueue<>();
+        minHeap.addAll(arestasByVertice.get(verticeInicial));
+
+        while(arvoreGeradoraMinima.vertices.size() < verticesCount) {
+            // Obter as arestas de todos os nós do MST que ainda não foram adicionadas no grafo
+            Aresta<T> arestaMenorPeso = minHeap.poll();
+
+            if(arestaMenorPeso != null) {
+                // adicionar a menor aresta e o vértice na MST
+                T destino = arestaMenorPeso.getDestino().getValor();
+                if(!arvoreGeradoraMinima.contem(destino)) {
+                    arvoreGeradoraMinima.adicionarVertice(destino);
+
+                    Vertice<T> verticeDestino = arvoreGeradoraMinima.getVertice(destino);
+                    Vertice<T> verticeOrigem = arvoreGeradoraMinima.getVertice(arestaMenorPeso.getOrigem().getValor());
+
+                    Aresta<T> novaAresta = new Aresta<>(verticeOrigem, verticeDestino, arestaMenorPeso.getPeso());
+                    verticeOrigem.addAresta(novaAresta);
+
+                    minHeap.addAll(arestasByVertice.get(verticeDestino.getValor()));
+                }
+            }
+        }
+
+        return arvoreGeradoraMinima;
+    }
+
+    private Map<T, List<Aresta<T>>> getArestasByVertice() {
+        Map<T, List<Aresta<T>>> arestasByVertice = new HashMap<>();
+
+        for(Vertice<T> vertice : this.vertices) {
+            arestasByVertice.put(vertice.getValor(), vertice.getArestas());
+        }
+
+        return arestasByVertice;
     }
 
     @Override
-    public Grafo caminhoMinimo(Object origem, Object destino) {
+    public Grafo<T> caminhoMinimo(Object origem, Object destino) {
         return null;
     }
 
-    private Vertice estaNoGrafo(T valor) {
-        for(Vertice vertice : this.vertices) {
-            if(vertice.getValor() == valor) return vertice;
+    private boolean contem(T valor) {
+        for(Vertice<T> vertice : this.vertices) {
+            if(vertice.getValor() == valor) return true;
         }
 
-        return null;
+        return false;
     }
 
     public void print() {
-        for(Vertice vertice : this.vertices) {
+        for(Vertice<T> vertice : this.vertices) {
             System.out.println(vertice);
             System.out.println("----------------------------------");
         }
@@ -68,11 +104,27 @@ public class Grafo<T> implements GrafoInterface<T>{
     @Override
     public String toString() {
         String output = "";
-        for(Vertice vertice : this.vertices) {
+        for(Vertice<T> vertice : this.vertices) {
             output += vertice.toString();
             output += "\n----------------------------------\n";
         }
 
         return output;
+    }
+
+    public List<Vertice<T>> getVertices() {
+        return vertices;
+    }
+
+    private Vertice<T> getVertice(T valor) {
+        for(Vertice<T> vertice : this.vertices) {
+            if(vertice.getValor() == valor) return vertice;
+        }
+
+        return null;
+    }
+
+    public String getLabel() {
+        return label;
     }
 }

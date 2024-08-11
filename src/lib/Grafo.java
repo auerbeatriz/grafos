@@ -37,6 +37,11 @@ public class Grafo<T> implements GrafoInterface<T>{
     @Override
     public Grafo<T> arvoreGeradoraMinima() {
         int verticesCount = this.vertices.size();
+
+        if(verticesCount == 0) {
+            return null;
+        }
+
         Map<T, List<Aresta<T>>> arestasByVertice = this.getArestasByVertice();
 
         T verticeInicial = this.vertices.get(0).getValor();
@@ -63,7 +68,7 @@ public class Grafo<T> implements GrafoInterface<T>{
                     Aresta<T> novaAresta = new Aresta<>(verticeOrigem, verticeDestino, arestaMenorPeso.getPeso());
                     verticeOrigem.addAresta(novaAresta);
 
-                    minHeap.addAll(arestasByVertice.get(verticeDestino.getValor()));
+                    minHeap.addAll(arestasByVertice.get(destino));
                 }
             }
         }
@@ -126,5 +131,9 @@ public class Grafo<T> implements GrafoInterface<T>{
 
     public String getLabel() {
         return label;
+    }
+
+    public void setVertices(List<Vertice<T>> vertices) {
+        this.vertices = vertices;
     }
 }

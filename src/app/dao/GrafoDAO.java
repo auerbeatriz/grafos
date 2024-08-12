@@ -16,8 +16,12 @@ public class GrafoDAO {
         this.grafo.adicionarVertice(nomeCidade);
     }
 
-    public void cadastrarRota(String origem, String destino, float distancia) throws VerticeNaoEncontradoException {
+    public void cadastrarRota(String origem, String destino, double distancia) throws VerticeNaoEncontradoException {
         this.grafo.adicionarAresta(origem, destino, distancia);
+    }
+
+    public Grafo<String> calcularAGM() throws VerticeDuplicadoException {
+        return this.grafo.arvoreGeradoraMinima();
     }
 
     public void exibirGrafo() {

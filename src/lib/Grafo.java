@@ -4,6 +4,7 @@ import lib.exception.VerticeDuplicadoException;
 import lib.exception.VerticeNaoEncontradoException;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Grafo<T> implements GrafoInterface<T>{
     List<Vertice<T>> vertices;
@@ -28,7 +29,7 @@ public class Grafo<T> implements GrafoInterface<T>{
     }
 
     @Override
-    public void adicionarAresta(T valorOrigem, T valorDestino, float peso) throws VerticeNaoEncontradoException {
+    public void adicionarAresta(T valorOrigem, T valorDestino, double peso) throws VerticeNaoEncontradoException {
         Vertice<T> origem = this.getVertice(valorOrigem);
         Vertice<T> destino = this.getVertice(valorDestino);
 
@@ -44,16 +45,32 @@ public class Grafo<T> implements GrafoInterface<T>{
         origem.addAresta(aresta);
     }
 
+    /**
+     * Implementação do algoritmo de PRIM
+     *
+     * Cria o grafo MST com um vértice aleatório (nesse caso, o 1.º do grafo original)
+     * Usa uma FILA DE PRIORIDADE com as arestas que devem ser processadas
+     *      As arestas a serem processadas são aquelas que partem dos vértices da MST
+     *      A FILA DE PRIORIDADE garante que a primeira na fila sempre seja a de menor peso
+     *      Portanto, a primeira da fila é a que deve ser adicionada ao MST
+     *      Mas ela só será adicionada na MST se ainda não tiver sido incluída
+     *
+     * O algoritmo executa para o primeiro vértice da MST (que adicionamos manualmente),
+     * e continua a executar até que todos os vértices do grafo original estejam na MST.
+     *
+     * Arestas e vértices não são duplicados (se um vértice já estiver na MST, ele não é adicionado de novo, e aquela aresta é descartada)
+     * Por fim, o algoritmo adiciona na FILA DE PRIORIDADE as arestas do novo vértice adicionado
+     * */
     @Override
     public Grafo<T> arvoreGeradoraMinima() throws VerticeDuplicadoException {
         int verticesCount = this.vertices.size();
 
+        // Se o grafo estiver vazio, retorne
         if(verticesCount == 0) {
             return null;
         }
 
         Map<T, List<Aresta<T>>> arestasByVertice = this.getArestasByVertice();
-
         T verticeInicial = this.vertices.get(0).getValor();
 
         Grafo<T> arvoreGeradoraMinima = new Grafo<>();
@@ -63,9 +80,7 @@ public class Grafo<T> implements GrafoInterface<T>{
         minHeap.addAll(arestasByVertice.get(verticeInicial));
 
         while(arvoreGeradoraMinima.vertices.size() < verticesCount) {
-            // Obter as arestas de todos os nós do MST que ainda não foram adicionadas no grafo
             Aresta<T> arestaMenorPeso = minHeap.poll();
-
             if(arestaMenorPeso != null) {
                 // adicionar a menor aresta e o vértice na MST
                 T destino = arestaMenorPeso.getDestino().getValor();
@@ -86,7 +101,14 @@ public class Grafo<T> implements GrafoInterface<T>{
         return arvoreGeradoraMinima;
     }
 
-    public Map<T, List<Aresta<T>>> getArestasByVertice() {
+    /**
+     * Método criado para facilitar a inclusão de arestas na MST sempre que um novo vértice é adicionado,
+     * uma vez que novos ponteiros Vertice são criados para a MST, perdendo-se os dados das arestas que
+     * devem ser processadas (para evitar inclusão de duplicatas, ou arestas erradas)
+     *
+     * @return MAP(Vertice: Aresta[])
+     * */
+    private Map<T, List<Aresta<T>>> getArestasByVertice() {
         Map<T, List<Aresta<T>>> arestasByVertice = new HashMap<>();
 
         for(Vertice<T> vertice : this.vertices) {
@@ -145,5 +167,11 @@ public class Grafo<T> implements GrafoInterface<T>{
 
     public void setVertices(List<Vertice<T>> vertices) {
         this.vertices = vertices;
+    }
+
+    public List<Aresta<T>> getArestas() {
+        return this.vertices.stream()
+                .flatMap(vertice -> vertice.getArestas().stream())
+                .collect(Collectors.toList());
     }
 }

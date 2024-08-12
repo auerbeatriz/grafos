@@ -15,7 +15,7 @@ public interface GrafoInterface<T> {
     * Cria uma aresta cuja origem e destino são os valores passados,
      * caso existam, com o peso associado
     * */
-    public void adicionarAresta(T origem, T destino, float peso) throws VerticeNaoEncontradoException;
+    public void adicionarAresta(T origem, T destino, double peso) throws VerticeNaoEncontradoException;
 
     /**
      * Computa a árvore geradora mínima,
@@ -30,6 +30,7 @@ public interface GrafoInterface<T> {
      * Calcula a menor distância entre eles
      * Imprime o caminho percorrido
      * Imprime a distância total percorrida
+     * @return Grafo
      * */
     public Grafo<T> caminhoMinimo(T origem, T destino);
 }

@@ -12,7 +12,7 @@ public class Menu {
     public Menu() {
         this.io = new EntradaSaida();
 
-        Grafo grafo = io.lerArquivo();
+        Grafo<String> grafo = io.lerArquivo();
         this.grafoService = new GrafoService(grafo);
     }
 
@@ -38,18 +38,18 @@ public class Menu {
                 case 2:
                     cadastrarRota();
                     break;
-//                case 3:
-//                    informarprerequisitos();
-//                    break;
-//                case 4:
-//                    this.informarDisciplinaCursada();
-//                    break;
-//                case 5:
-//                    this.consultarAlunoNome();
-//                    break;
-//                case 6:
-//                    this.consultarAlunoMatricula();
-//                    break;
+                case 3:
+                    calcularAGM();
+                    break;
+                case 4:
+                    this.calcularCaminhoMinimo();
+                    break;
+                case 5:
+                    this.calcularCaminhoMinimoAGM();
+                    break;
+                case 6:
+                    this.gravarGrafoArquivo();
+                    break;
                 case 7:
                     this.grafoService.exibirGrafo();
                     break;
@@ -95,4 +95,23 @@ public class Menu {
 
         System.out.println("-----------------------------------------------------");
     }
+
+    private void calcularAGM() {
+        System.out.println("------------------------ AGM ------------------------");
+        this.grafoService.calcularAGM();
+        System.out.println("-----------------------------------------------------");
+    }
+
+    private void calcularCaminhoMinimo() {
+        System.out.println("NOT IMPLEMENTED.");
+    }
+
+    private void calcularCaminhoMinimoAGM() {
+        System.out.println("NOT IMPLEMENTED.");
+    }
+
+    private void gravarGrafoArquivo() {
+        System.out.println("NOT IMPLEMENTED.");
+    }
+
 }

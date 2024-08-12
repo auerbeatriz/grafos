@@ -1,5 +1,10 @@
 package lib;
 
+/*
+* Implements Comparable
+* Reasons: facilidade para o algoritmo MST (Prim)
+* */
+
 public class Aresta<T> implements Comparable<Aresta<T>> {
     private Vertice<T> origem;
     private Vertice<T> destino;

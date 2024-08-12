@@ -1,5 +1,8 @@
 package lib;
 
+import lib.exception.VerticeDuplicadoException;
+import lib.exception.VerticeNaoEncontradoException;
+
 import java.util.*;
 
 public class Grafo<T> implements GrafoInterface<T>{
@@ -16,26 +19,33 @@ public class Grafo<T> implements GrafoInterface<T>{
     }
 
     @Override
-    public void adicionarVertice(T elemento) {
-        if(!this.contem(elemento)) {
-            Vertice<T> vertice = new Vertice<>(elemento);
-            this.vertices.add(vertice);
-        }
+    public void adicionarVertice(T elemento) throws VerticeDuplicadoException {
+        if(this.contem(elemento))
+            throw new VerticeDuplicadoException();
+
+        Vertice<T> vertice = new Vertice<>(elemento);
+        this.vertices.add(vertice);
     }
 
     @Override
-    public void adicionarAresta(T valorOrigem, T valorDestino, float peso) {
+    public void adicionarAresta(T valorOrigem, T valorDestino, float peso) throws VerticeNaoEncontradoException {
         Vertice<T> origem = this.getVertice(valorOrigem);
         Vertice<T> destino = this.getVertice(valorDestino);
 
-        if(origem != null && destino != null) {
-            Aresta<T> aresta = new Aresta<>(origem, destino, peso);
-            origem.addAresta(aresta);
+        if(origem == null) {
+            throw new VerticeNaoEncontradoException((String) valorOrigem);
         }
+
+        if(destino == null) {
+            throw new VerticeNaoEncontradoException((String) valorDestino);
+        }
+
+        Aresta<T> aresta = new Aresta<>(origem, destino, peso);
+        origem.addAresta(aresta);
     }
 
     @Override
-    public Grafo<T> arvoreGeradoraMinima() {
+    public Grafo<T> arvoreGeradoraMinima() throws VerticeDuplicadoException {
         int verticesCount = this.vertices.size();
 
         if(verticesCount == 0) {
@@ -93,7 +103,7 @@ public class Grafo<T> implements GrafoInterface<T>{
 
     public boolean contem(T valor) {
         for(Vertice<T> vertice : this.vertices) {
-            if(vertice.getValor() == valor) return true;
+            if(vertice.getValor().equals(valor)) return true;
         }
 
         return false;
@@ -123,7 +133,7 @@ public class Grafo<T> implements GrafoInterface<T>{
 
     public Vertice<T> getVertice(T valor) {
         for(Vertice<T> vertice : this.vertices) {
-            if(vertice.getValor() == valor) return vertice;
+            if(vertice.getValor().equals(valor)) return vertice;
         }
 
         return null;

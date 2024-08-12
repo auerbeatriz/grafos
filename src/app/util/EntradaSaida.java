@@ -1,4 +1,4 @@
-package main.util;
+package app.util;
 
 import lib.Aresta;
 import lib.Grafo;
@@ -68,5 +68,19 @@ public class EntradaSaida {
                 }
             }
         }
+    }
+
+    public int lerInteiro() {
+        String linha = this.input.nextLine();
+        return Integer.parseInt(linha);
+    }
+
+    public String lerString() {
+        return this.input.nextLine();
+    }
+
+    public float lerFloat() {
+        String linha = this.input.nextLine();
+        return Float.parseFloat(linha);
     }
 }

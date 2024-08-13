@@ -90,7 +90,7 @@ public class GrafoService {
 
     public double calcularPesoTotal(Grafo<String> grafo) {
         List<Aresta<String>> arestas = grafo.getArestas();
-        return arestas.stream().map(Aresta::getPeso).reduce(0.0, Double::sum);
+        return arestas.stream().map(Aresta::getPeso).reduce(0.0, Double::sum)/2;
     }
 
     public void exibirGrafo() {

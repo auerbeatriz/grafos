@@ -17,7 +17,7 @@ public class Menu {
         this.grafoService = new GrafoService(grafo);
     }
 
-    public void exibirMenu() throws VerticeDuplicadoException, VerticeNaoEncontradoException {
+    public void exibirMenu() {
         int opcao;
         do {
             System.out.println("1. Cadastrar cidade");
@@ -103,7 +103,7 @@ public class Menu {
         System.out.println("-----------------------------------------------------");
     }
 
-    private void calcularCaminhoMinimo() throws VerticeDuplicadoException, VerticeNaoEncontradoException {
+    private void calcularCaminhoMinimo(){
         System.out.println("------------------ CAMINHO MINIMO -------------------");
 
         System.out.print("Cidade de origem: ");
@@ -116,7 +116,7 @@ public class Menu {
         System.out.println("-----------------------------------------------------");
     }
 
-    private void calcularCaminhoMinimoAGM() throws VerticeDuplicadoException, VerticeNaoEncontradoException {
+    private void calcularCaminhoMinimoAGM() {
 
         System.out.println("------------------ CAMINHO MINIMO AGM -------------------");
 

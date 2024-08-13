@@ -25,18 +25,32 @@ public class GrafoService {
         System.out.println("NOT IMPLEMENTED.");
     }
 
-    public Grafo<String> caminhoMinimo(String origem, String destino) throws VerticeDuplicadoException, VerticeNaoEncontradoException {
-        Grafo<String> caminho = this.grafoDAO.caminhoMinimo(origem, destino);
-        exibirCaminhoMinimo(caminho, origem, destino);
-        return caminho;
+    public Grafo<String> caminhoMinimo(String origem, String destino) {
+        try {
+            Grafo<String> caminho = this.grafoDAO.caminhoMinimo(origem, destino);
+            exibirCaminhoMinimo(caminho, origem, destino);
+            return caminho;
+        } catch (VerticeNaoEncontradoException e) {
+            System.out.println("Erro ao calcular o caminho mínimo. " + e.getMessage());
+            return new Grafo<>();
+        } catch (VerticeDuplicadoException e) {
+            System.out.println("Erro ao calcular o caminho mínimo. " + e.getMessage());
+            return new Grafo<>();
+        }
     }
 
-    public Grafo<String> caminhoMinimoAGM(String origem, String destino) throws VerticeDuplicadoException, VerticeNaoEncontradoException {
-
-        Grafo<String> agm = this.calcularAGM();
-        Grafo<String> caminhoMinimoAGM = agm.caminhoMinimo(origem, destino);
-
-        return caminhoMinimoAGM;
+    public Grafo<String> caminhoMinimoAGM(String origem, String destino) {
+        try {
+            Grafo<String> agm = this.calcularAGM();
+            Grafo<String> caminhoMinimoAGM = agm.caminhoMinimo(origem, destino);
+            return caminhoMinimoAGM;
+        } catch (VerticeNaoEncontradoException e) {
+            System.out.println("Erro ao calcular o caminho mínimo na AGM. " + e.getMessage());
+            return new Grafo<>();
+        } catch (VerticeDuplicadoException e) {
+            System.out.println("Erro ao calcular a AGM. " + e.getMessage());
+            return new Grafo<>();
+        }
     }
 
     private void exibirCaminhoMinimo(Grafo<String> caminho, String origem, String destino) {

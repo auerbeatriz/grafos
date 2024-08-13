@@ -1,9 +1,12 @@
 package app.dao;
 
+import lib.Aresta;
 import lib.Vertice;
 import lib.exception.VerticeDuplicadoException;
 import lib.Grafo;
 import lib.exception.VerticeNaoEncontradoException;
+
+import java.util.List;
 
 public class GrafoDAO {
     private Grafo<String> grafo;
@@ -28,15 +31,23 @@ public class GrafoDAO {
         return this.grafo.arvoreGeradoraMinima();
     }
 
-    public void exibirGrafo() {
-        System.out.println(this.grafo);
-    }
-
     public Vertice<String> getVertice(String valor) {
         return this.grafo.getVertice(valor);
     }
 
+    public List<Vertice<String>> getVertices() {
+        return this.grafo.getVertices();
+    }
+
+    public List<Aresta<String>> getArestas() {
+        return this.grafo.getArestas();
+    }
+
     public void adicionarVertice(String origem) throws VerticeDuplicadoException {
         this.grafo.adicionarVertice(origem);
+    }
+
+    public Grafo<String> getGrafo() {
+        return this.grafo;
     }
 }

@@ -71,6 +71,36 @@ public class EntradaSaida {
         }
     }
 
+    public void gravarGrafo(Grafo grafo, String filename) throws IOException {
+        FileWriter f = null;
+
+        f = new FileWriter(filename);
+        BufferedWriter buffer = new BufferedWriter(f);
+
+        List<Vertice<String>> vertices = grafo.getVertices();
+
+        buffer.write(String.valueOf(vertices.size()) + "\n");
+
+        for(Vertice<String> vertice : vertices) {
+            buffer.write(vertice.getValor() + "\n");
+        }
+
+        for(Vertice<String> origem : vertices) {
+            for(Vertice<String> destino : vertices) {
+                Aresta<String> aresta = origem.getAresta(destino.getValor());
+
+                if(aresta != null)
+                    buffer.write(aresta.getPeso() + ", ");
+                else
+                    buffer.write("0, ");
+            }
+
+            buffer.write("\n");
+        }
+
+        buffer.close();
+    }
+
     public int lerInteiro() {
         String linha = this.input.nextLine();
         return Integer.parseInt(linha);
@@ -83,5 +113,9 @@ public class EntradaSaida {
     public float lerFloat() {
         String linha = this.input.nextLine();
         return Float.parseFloat(linha);
+    }
+
+    public void show(Object o) {
+        System.out.println(o.toString());
     }
 }

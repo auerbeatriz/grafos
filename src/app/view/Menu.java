@@ -6,6 +6,8 @@ import app.service.GrafoService;
 import app.util.EntradaSaida;
 import lib.exception.VerticeNaoEncontradoException;
 
+import java.io.IOException;
+
 public class Menu {
     private EntradaSaida io;
     private GrafoService grafoService;
@@ -52,7 +54,7 @@ public class Menu {
                     this.gravarGrafoArquivo();
                     break;
                 case 7:
-                    this.grafoService.exibirGrafo();
+                    this.exibirGrafo();
                     break;
                 case 0:
                     System.out.println("Tchau!");
@@ -121,7 +123,6 @@ public class Menu {
     }
 
     private void calcularCaminhoMinimoAGM() {
-
         System.out.println("------------------ CAMINHO MINIMO AGM -------------------");
 
         System.out.print("Cidade de origem: ");
@@ -135,7 +136,22 @@ public class Menu {
     }
 
     private void gravarGrafoArquivo() {
-        System.out.println("NOT IMPLEMENTED.");
+        Grafo<String> grafo = this.grafoService.getGrafoAtual();
+        Grafo<String> agm = this.grafoService.calcularAGM(false);
+
+        System.out.println("ⓘ Gravando...");
+        try {
+            this.io.gravarGrafo(grafo, "grafoCompleto.txt");
+            this.io.gravarGrafo(agm, "agm.txt");
+            System.out.println("ⓘ Grafo gravado com sucesso.");
+        } catch (IOException e) {
+            System.out.println("⚠ Não foi possível gravar o grafo no arquivo. Erro: " + e.getMessage());
+        }
+    }
+
+    private void exibirGrafo() {
+        Grafo<String> grafo = this.grafoService.getGrafoAtual();
+        this.io.show(grafo);
     }
 
 }

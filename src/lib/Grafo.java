@@ -97,8 +97,8 @@ public class Grafo<T> implements GrafoInterface<T>{
                     Aresta<T> novaAresta = new Aresta<>(verticeOrigem, verticeDestino, arestaMenorPeso.getPeso());
                     verticeOrigem.addAresta(novaAresta);
 
-                    /*Aresta<T> novaArestaVolta = new Aresta<>(verticeDestino, verticeOrigem, arestaMenorPeso.getPeso());
-                    verticeDestino.addAresta(novaArestaVolta);*/
+                    Aresta<T> novaArestaVolta = new Aresta<>(verticeDestino, verticeOrigem, arestaMenorPeso.getPeso());
+                    verticeDestino.addAresta(novaArestaVolta);
 
                     minHeap.addAll(arestasByVertice.get(destino));
                 }

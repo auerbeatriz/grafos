@@ -67,7 +67,7 @@ public class Grafo<T> implements GrafoInterface<T>{
      * Por fim, o algoritmo adiciona na FILA DE PRIORIDADE as arestas do novo vértice adicionado
      * */
     @Override
-    public Grafo<T> arvoreGeradoraMinima() throws IllegalArgumentException, VerticeDuplicadoException {
+    public Grafo<T> arvoreGeradoraMinima() throws VerticeDuplicadoException, IllegalArgumentException {
         int verticesCount = this.vertices.size();
 
         // Se o grafo estiver vazio, retorne

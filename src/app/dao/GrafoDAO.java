@@ -27,8 +27,12 @@ public class GrafoDAO {
         return this.grafo.caminhoMinimo(origem, destino);
     }
 
-    public Grafo<String> calcularAGM() throws VerticeDuplicadoException {
+    public Grafo<String> calcularAGM() throws VerticeDuplicadoException, IllegalArgumentException {
         return this.grafo.arvoreGeradoraMinima();
+    }
+
+    public void exibirGrafo() {
+        System.out.println(this.grafo);
     }
 
     public Vertice<String> getVertice(String valor) {
@@ -48,6 +52,10 @@ public class GrafoDAO {
     }
 
     public Grafo<String> getGrafo() {
+        return this.grafo;
+    }
+
+    public Grafo<String> getGrafoAtual() {
         return this.grafo;
     }
 }

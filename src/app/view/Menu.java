@@ -105,7 +105,17 @@ public class Menu {
 
     private void calcularAGM() {
         System.out.println("------------------------ AGM ------------------------");
-        this.grafoService.calcularAGM();
+
+        try {
+            Grafo<String> agm = this.grafoService.calcularAGM();
+            double pesoTotal = this.grafoService.calcularPesoTotal(agm);
+
+            this.io.exibirGrafo(agm);
+            System.out.println("Peso total da AGM: " + pesoTotal);
+        } catch (VerticeDuplicadoException | IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+        }
+
         System.out.println("-----------------------------------------------------");
     }
 
@@ -131,27 +141,32 @@ public class Menu {
         System.out.print("Cidade de destino: ");
         String destino = io.lerString();
 
-        this.grafoService.caminhoMinimoAGM(origem,destino);
+        try {
+            this.grafoService.caminhoMinimoAGM(origem,destino);
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+        }
+
         System.out.println("-----------------------------------------------------");
     }
 
     private void gravarGrafoArquivo() {
-        Grafo<String> grafo = this.grafoService.getGrafoAtual();
-        Grafo<String> agm = this.grafoService.calcularAGM(false);
-
         System.out.println("ⓘ Gravando...");
+
         try {
+            Grafo<String> grafo = this.grafoService.getGrafoAtual();
+            Grafo<String> agm = this.grafoService.calcularAGM();
+
             this.io.gravarGrafo(grafo, "grafoCompleto.txt");
             this.io.gravarGrafo(agm, "agm.txt");
             System.out.println("ⓘ Grafo gravado com sucesso.");
-        } catch (IOException e) {
-            System.out.println("⚠ Não foi possível gravar o grafo no arquivo. Erro: " + e.getMessage());
+        } catch (IOException | IllegalArgumentException | VerticeDuplicadoException e) {
+            System.out.println("⚠ Não foi possível gravar o grafo no arquivo. \nErro: " + e.getMessage());
         }
     }
 
     private void exibirGrafo() {
-        Grafo<String> grafo = this.grafoService.getGrafoAtual();
-        this.io.show(grafo);
+        this.grafoService.exibirGrafo();
     }
 
 }

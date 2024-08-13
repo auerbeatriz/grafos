@@ -115,7 +115,7 @@ public class EntradaSaida {
         return Float.parseFloat(linha);
     }
 
-    public void show(Object o) {
-        System.out.println(o.toString());
+    public void exibirGrafo(Grafo<String> grafo) {
+        System.out.println(grafo);
     }
 }

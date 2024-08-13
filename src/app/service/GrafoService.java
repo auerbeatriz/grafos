@@ -1,16 +1,12 @@
 package app.service;
 
 import app.dao.GrafoDAO;
-import app.util.EntradaSaida;
 import lib.Aresta;
 import lib.Vertice;
 import lib.exception.VerticeDuplicadoException;
 import lib.Grafo;
 import lib.exception.VerticeNaoEncontradoException;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.List;
 
 public class GrafoService {
@@ -52,7 +48,7 @@ public class GrafoService {
         }
     }
 
-    public Grafo<String> caminhoMinimoAGM(String origem, String destino) {
+    public Grafo<String> caminhoMinimoAGM(String origem, String destino) throws IllegalArgumentException {
         try {
             Grafo<String> agm = this.calcularAGM();
             // Verificando se o grafo AGM é nulo
@@ -88,35 +84,20 @@ public class GrafoService {
         System.out.println("Distância total: " + distanciaTotal + " km");
     }
 
-    public Grafo<String> calcularAGM() {
-        return this.calcularAGM(true);
+    public Grafo<String> calcularAGM() throws VerticeDuplicadoException, IllegalArgumentException {
+        return this.grafoDAO.calcularAGM();
     }
 
-    public Grafo<String> calcularAGM(boolean exibir) {
-        Grafo<String> agm = null;
-
-        try {
-            agm = this.grafoDAO.calcularAGM();
-
-            if(exibir) {
-                System.out.println(agm);
-                System.out.println("Peso total da AGM: " + this.calcularPesoTotal(agm));
-            }
-        } catch (VerticeDuplicadoException e) {
-            System.out.println("⚠ Não foi possível calcular a AGM. \nErro: " + e.getMessage());
-        } catch (IllegalArgumentException e) {
-            System.out.println(e.getMessage());
-        }
-
-        return agm;
-    }
-
-    private double calcularPesoTotal(Grafo<String> grafo) {
+    public double calcularPesoTotal(Grafo<String> grafo) {
         List<Aresta<String>> arestas = grafo.getArestas();
         return arestas.stream().map(Aresta::getPeso).reduce(0.0, Double::sum);
     }
 
+    public void exibirGrafo() {
+        this.grafoDAO.exibirGrafo();
+    }
+
     public Grafo<String> getGrafoAtual() {
-        return this.grafoDAO.getGrafo();
+        return this.grafoDAO.getGrafoAtual();
     }
 }

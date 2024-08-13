@@ -102,8 +102,16 @@ public class EntradaSaida {
     }
 
     public int lerInteiro() {
+        int op;
+
         String linha = this.input.nextLine();
-        return Integer.parseInt(linha);
+        try{
+            op = Integer.parseInt(linha);
+        } catch (NumberFormatException e) {
+            return this.lerInteiro();
+        }
+
+        return op;
     }
 
     public String lerString() {
@@ -111,11 +119,54 @@ public class EntradaSaida {
     }
 
     public float lerFloat() {
+        float op;
+
         String linha = this.input.nextLine();
-        return Float.parseFloat(linha);
+        try{
+            op = Float.parseFloat(linha);
+        } catch (NumberFormatException e) {
+            return this.lerFloat();
+        }
+
+        return op;
+    }
+
+    public double lerDouble() {
+        double op;
+
+        String linha = this.input.nextLine();
+        try{
+            op = Double.parseDouble(linha);
+        } catch (NumberFormatException e) {
+            return this.lerFloat();
+        }
+
+        return op;
     }
 
     public void exibirGrafo(Grafo<String> grafo) {
         System.out.println(grafo);
+    }
+
+    public void exibirCaminhoMinimo(Grafo<String> caminho, String origem, String destino) {
+        if(caminho != null) {
+            List<Aresta<String>> arestas = caminho.getArestas();
+            if (arestas.isEmpty()) {
+                System.out.println("⚠ Não há arestas no caminho mínimo.");
+                return;
+            }
+
+            System.out.println("Caminho mínimo de " + origem + " até " + destino + ":");
+            double distanciaTotal = 0.0;
+
+            for (Aresta<String> aresta : arestas) {
+                System.out.println(aresta.getOrigem() + " -> " + aresta.getDestino() + " : " + aresta.getPeso() + " km");
+                distanciaTotal += aresta.getPeso();
+            }
+
+            System.out.println("Distância total: " + distanciaTotal + " km");
+        } else {
+            System.out.println("ⓘ Caminho mínimo é nulo.");
+        }
     }
 }

@@ -1,5 +1,7 @@
 package app.view;
 
+import app.service.GrafoVazioException;
+import lib.Aresta;
 import lib.exception.VerticeDuplicadoException;
 import lib.Grafo;
 import app.service.GrafoService;
@@ -7,6 +9,7 @@ import app.util.EntradaSaida;
 import lib.exception.VerticeNaoEncontradoException;
 
 import java.io.IOException;
+import java.util.List;
 
 public class Menu {
     private EntradaSaida io;
@@ -91,7 +94,7 @@ public class Menu {
         String destino = io.lerString();
 
         System.out.print("Distância: ");
-        float distancia = io.lerFloat();
+        double distancia = io.lerDouble();
 
         try {
             this.grafoService.cadastrarRota(origem, destino, distancia);
@@ -105,13 +108,17 @@ public class Menu {
 
     private void calcularAGM() {
         System.out.println("------------------------ AGM ------------------------");
-
         try {
             Grafo<String> agm = this.grafoService.calcularAGM();
-            double pesoTotal = this.grafoService.calcularPesoTotal(agm);
 
-            this.io.exibirGrafo(agm);
-            System.out.println("Peso total da AGM: " + pesoTotal);
+            if(agm != null) {
+                double pesoTotal = this.grafoService.calcularPesoTotal(agm);
+
+                this.io.exibirGrafo(agm);
+                System.out.println("Peso total da AGM: " + pesoTotal);
+            } else {
+                System.out.println("ⓘ A AGM é nula.");
+            }
         } catch (VerticeDuplicadoException | IllegalArgumentException e) {
             System.out.println(e.getMessage());
         }
@@ -128,7 +135,13 @@ public class Menu {
         System.out.print("Cidade de destino: ");
         String destino = io.lerString();
 
-        this.grafoService.caminhoMinimo(origem,destino);
+        try{
+            Grafo<String> caminhoMinimo = this.grafoService.caminhoMinimo(origem,destino);
+            this.io.exibirCaminhoMinimo(caminhoMinimo, origem, destino);
+        } catch (VerticeDuplicadoException | VerticeNaoEncontradoException e) {
+            System.out.println(e.getMessage());
+        }
+
         System.out.println("-----------------------------------------------------");
     }
 
@@ -142,8 +155,9 @@ public class Menu {
         String destino = io.lerString();
 
         try {
-            this.grafoService.caminhoMinimoAGM(origem,destino);
-        } catch (IllegalArgumentException e) {
+            Grafo<String> caminhoMinimo = this.grafoService.caminhoMinimoAGM(origem,destino);
+            this.io.exibirCaminhoMinimo(caminhoMinimo, origem, destino);
+        } catch (IllegalArgumentException | GrafoVazioException | VerticeDuplicadoException | VerticeNaoEncontradoException  e) {
             System.out.println(e.getMessage());
         }
 

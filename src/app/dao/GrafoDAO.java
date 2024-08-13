@@ -20,6 +20,10 @@ public class GrafoDAO {
         this.grafo.adicionarAresta(origem, destino, distancia);
     }
 
+    public Grafo<String> caminhoMinimo(String origem, String destino) throws VerticeDuplicadoException, VerticeNaoEncontradoException {
+        return this.grafo.caminhoMinimo(origem, destino);
+    }
+
     public Grafo<String> calcularAGM() throws VerticeDuplicadoException {
         return this.grafo.arvoreGeradoraMinima();
     }

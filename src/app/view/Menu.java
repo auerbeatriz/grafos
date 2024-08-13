@@ -4,6 +4,7 @@ import lib.exception.VerticeDuplicadoException;
 import lib.Grafo;
 import app.service.GrafoService;
 import app.util.EntradaSaida;
+import lib.exception.VerticeNaoEncontradoException;
 
 public class Menu {
     private EntradaSaida io;
@@ -16,7 +17,7 @@ public class Menu {
         this.grafoService = new GrafoService(grafo);
     }
 
-    public void exibirMenu() {
+    public void exibirMenu() throws VerticeDuplicadoException, VerticeNaoEncontradoException {
         int opcao;
         do {
             System.out.println("1. Cadastrar cidade");
@@ -102,12 +103,31 @@ public class Menu {
         System.out.println("-----------------------------------------------------");
     }
 
-    private void calcularCaminhoMinimo() {
-        System.out.println("NOT IMPLEMENTED.");
+    private void calcularCaminhoMinimo() throws VerticeDuplicadoException, VerticeNaoEncontradoException {
+        System.out.println("------------------ CAMINHO MINIMO -------------------");
+
+        System.out.print("Cidade de origem: ");
+        String origem = io.lerString();
+
+        System.out.print("Cidade de destino: ");
+        String destino = io.lerString();
+
+        this.grafoService.caminhoMinimo(origem,destino);
+        System.out.println("-----------------------------------------------------");
     }
 
-    private void calcularCaminhoMinimoAGM() {
-        System.out.println("NOT IMPLEMENTED.");
+    private void calcularCaminhoMinimoAGM() throws VerticeDuplicadoException, VerticeNaoEncontradoException {
+
+        System.out.println("------------------ CAMINHO MINIMO AGM -------------------");
+
+        System.out.print("Cidade de origem: ");
+        String origem = io.lerString();
+
+        System.out.print("Cidade de destino: ");
+        String destino = io.lerString();
+
+        this.grafoService.caminhoMinimoAGM(origem,destino);
+        System.out.println("-----------------------------------------------------");
     }
 
     private void gravarGrafoArquivo() {

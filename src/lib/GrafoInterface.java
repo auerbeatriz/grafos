@@ -32,5 +32,5 @@ public interface GrafoInterface<T> {
      * Imprime a distância total percorrida
      * @return Grafo
      * */
-    public Grafo<T> caminhoMinimo(T origem, T destino);
+    public Grafo<T> caminhoMinimo(T origem, T destino) throws VerticeDuplicadoException, VerticeNaoEncontradoException;
 }

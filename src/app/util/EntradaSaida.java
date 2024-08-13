@@ -55,10 +55,11 @@ public class EntradaSaida {
 
     private void lerCaminhos(List<Vertice<String>> cidades, BufferedReader buffer) throws IOException {
         for(int i = 0; i < cidades.size(); i++) {
-            String[] line = buffer.readLine().split(",");
+            String[] line = buffer.readLine().trim().split(",");
 
             for(int j = 0; j < cidades.size(); j++) {
-                int n = Integer.parseInt(line[j]);
+                double n = Double.parseDouble(line[j]);
+
                 if(n > 0) {
                     Vertice<String> origem = cidades.get(i);
                     Vertice<String> destino = cidades.get(j);

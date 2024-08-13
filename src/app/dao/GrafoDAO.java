@@ -35,4 +35,8 @@ public class GrafoDAO {
     public Vertice<String> getVertice(String valor) {
         return this.grafo.getVertice(valor);
     }
+
+    public void adicionarVertice(String origem) throws VerticeDuplicadoException {
+        this.grafo.adicionarVertice(origem);
+    }
 }

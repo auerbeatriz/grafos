@@ -23,7 +23,7 @@ public interface GrafoInterface<T> {
      * Imprime a soma dos pesos das arestas da AGM
      * @return Grafo
      */
-    public Grafo<T> arvoreGeradoraMinima() throws VerticeDuplicadoException;
+    public Grafo<T> arvoreGeradoraMinima() throws IllegalArgumentException, VerticeDuplicadoException;
 
     /**
      * Dados dois vértices de origem e destino

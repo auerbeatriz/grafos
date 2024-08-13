@@ -7,11 +7,16 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class Grafo<T> implements GrafoInterface<T>{
-    List<Vertice<T>> vertices;
-    String label;
+    private List<Vertice<T>> vertices;
+    private String label;
 
     public Grafo() {
         this.vertices = new ArrayList<>();
+    }
+
+    public Grafo(T valorInicial) {
+        this.vertices = new ArrayList<>();
+        this.vertices.add(new Vertice<>(valorInicial));
     }
 
     public Grafo(String label) {
@@ -62,7 +67,7 @@ public class Grafo<T> implements GrafoInterface<T>{
      * Por fim, o algoritmo adiciona na FILA DE PRIORIDADE as arestas do novo vértice adicionado
      * */
     @Override
-    public Grafo<T> arvoreGeradoraMinima() throws VerticeDuplicadoException {
+    public Grafo<T> arvoreGeradoraMinima() throws IllegalArgumentException, VerticeDuplicadoException {
         int verticesCount = this.vertices.size();
 
         // Se o grafo estiver vazio, retorne
@@ -70,14 +75,13 @@ public class Grafo<T> implements GrafoInterface<T>{
             return null;
         }
 
-        Map<T, List<Aresta<T>>> arestasByVertice = this.getArestasByVertice();
-        T verticeInicial = this.vertices.get(0).getValor();
+        Map<T, List<Aresta<T>>> arestasByVertice = this.getArestasByVertice(); // O(N)
 
-        Grafo<T> arvoreGeradoraMinima = new Grafo<>();
-        arvoreGeradoraMinima.adicionarVertice(verticeInicial);
+        T verticeInicial = this.vertices.get(0).getValor();
+        Grafo<T> arvoreGeradoraMinima = new Grafo<>(verticeInicial);
 
         PriorityQueue<Aresta<T>> minHeap = new PriorityQueue<>();
-        minHeap.addAll(arestasByVertice.get(verticeInicial));
+        minHeap.addAll(arestasByVertice.get(verticeInicial)); // O(klogn)
 
         while(arvoreGeradoraMinima.vertices.size() < verticesCount) {
             Aresta<T> arestaMenorPeso = minHeap.poll();
@@ -108,11 +112,16 @@ public class Grafo<T> implements GrafoInterface<T>{
      *
      * @return MAP(Vertice: Aresta[])
      * */
-    private Map<T, List<Aresta<T>>> getArestasByVertice() {
+    private Map<T, List<Aresta<T>>> getArestasByVertice() throws IllegalArgumentException  {
         Map<T, List<Aresta<T>>> arestasByVertice = new HashMap<>();
 
         for(Vertice<T> vertice : this.vertices) {
-            arestasByVertice.put(vertice.getValor(), vertice.getArestas());
+            List<Aresta<T>> arestas = vertice.getArestas();
+
+            if(arestas.isEmpty())
+                throw new IllegalArgumentException("⚠ Não é possível gerar uma AGM a partir de um grafo com vértices isolados ou direcionados.");
+
+            arestasByVertice.put(vertice.getValor(), arestas);
         }
 
         return arestasByVertice;

@@ -91,8 +91,12 @@ public class Menu {
         System.out.print("Distância: ");
         float distancia = io.lerFloat();
 
-        this.grafoService.cadastrarRota(origem, destino, distancia);
-        System.out.println("Rota cadastrada com sucesso.");
+        try {
+            this.grafoService.cadastrarRota(origem, destino, distancia);
+            System.out.println("Rota cadastrada com sucesso.");
+        } catch (VerticeDuplicadoException | VerticeNaoEncontradoException e) {
+            System.out.println("Erro interno. Erro: " + e.getMessage());
+        }
 
         System.out.println("-----------------------------------------------------");
     }

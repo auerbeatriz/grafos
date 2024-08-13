@@ -2,6 +2,7 @@ package app.service;
 
 import app.dao.GrafoDAO;
 import lib.Aresta;
+import lib.Vertice;
 import lib.exception.VerticeDuplicadoException;
 import lib.Grafo;
 import lib.exception.VerticeNaoEncontradoException;
@@ -21,8 +22,16 @@ public class GrafoService {
         this.grafoDAO.cadastrarCidade(nomeCidade);
     }
 
-    public void cadastrarRota(String origem, String destino, float distancia) {
-        System.out.println("NOT IMPLEMENTED.");
+    public void cadastrarRota(String origem, String destino, float distancia) throws VerticeDuplicadoException, VerticeNaoEncontradoException {
+        if (this.grafoDAO.getVertice(origem) == null) {
+            this.grafoDAO.adicionarVertice(origem);
+        }
+
+        if (this.grafoDAO.getVertice(destino) == null) {
+            this.grafoDAO.adicionarVertice(destino);
+        }
+
+        this.grafoDAO.cadastrarRota(origem, destino, distancia);
     }
 
     public Grafo<String> caminhoMinimo(String origem, String destino) {
@@ -74,7 +83,9 @@ public class GrafoService {
             System.out.println(agm);
             System.out.println("Peso total da AGM: " + this.calcularPesoTotal(agm));
         } catch (VerticeDuplicadoException e) {
-            System.out.println("Não foi possível calcular a AGM. \nErro: " + e.getMessage());
+            System.out.println("⚠ Não foi possível calcular a AGM. \nErro: " + e.getMessage());
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
         }
 
         return agm;

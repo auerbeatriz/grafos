@@ -55,7 +55,16 @@ public class GrafoService {
     public Grafo<String> caminhoMinimoAGM(String origem, String destino) {
         try {
             Grafo<String> agm = this.calcularAGM();
+            // Verificando se o grafo AGM é nulo
+            if (agm == null) {
+                System.out.println("Erro: A AGM calculada é nula.");
+                return new Grafo<>();
+            }
             Grafo<String> caminhoMinimoAGM = agm.caminhoMinimo(origem, destino);
+
+            // Exibindo o caminho mínimo encontrado na AGM
+            exibirCaminhoMinimo(caminhoMinimoAGM, origem, destino);
+
             return caminhoMinimoAGM;
         } catch (VerticeNaoEncontradoException e) {
             System.out.println("Erro ao calcular o caminho mínimo na AGM. " + e.getMessage());

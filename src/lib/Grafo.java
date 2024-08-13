@@ -145,27 +145,31 @@ public class Grafo<T> implements GrafoInterface<T>{
         // Fila de prioridade (min-heap) para processar os vértices pela menor distância.
         PriorityQueue<Vertice<T>> minHeap = new PriorityQueue<>(Comparator.comparing(distancias::get));
 
-        // Inicializo as distâncias com infinito(no caso o valor máximo possível) e antecessores com null.
+        // Inicializo as distâncias com infinito e antecessores com null.
         for (Vertice<T> vertice : this.vertices) {
             distancias.put(vertice, Float.MAX_VALUE);
             antecessores.put(vertice, null);
+            minHeap.add(vertice); // Adiciona todos os vértices na fila de prioridade.
         }
 
         // A distância da origem pra ela mesma é, é claro, zero.
         distancias.put(verticeOrigem, 0f);
-        // Adiciono a origem na fila de prioridade.
-        minHeap.add(verticeOrigem);
 
         // Enquanto a fila de prioridade não ficar vazia, continuo processando.
         while (!minHeap.isEmpty()) {
             // Pego o vértice com a menor distância.
             Vertice<T> verticeAtual = minHeap.poll();
 
+            // Se o vértice atual for o destino, podemos parar.
+            if (verticeAtual.equals(verticeDestino)) {
+                break;
+            }
+
             // Para cada aresta do vértice atual, calculo as novas distâncias.
             for (Aresta<T> aresta : verticeAtual.getArestas()) {
                 Vertice<T> vizinho = aresta.getDestino();
                 // Calculo a nova distância desse vizinho.
-                float novaDistancia = distancias.get(verticeAtual) + (float)aresta.getPeso();
+                float novaDistancia = distancias.get(verticeAtual) + (float) aresta.getPeso();
 
                 // Se essa nova distância for menor, atualizo tudo.
                 if (novaDistancia < distancias.get(vizinho)) {
@@ -173,9 +177,6 @@ public class Grafo<T> implements GrafoInterface<T>{
                     antecessores.put(vizinho, verticeAtual);
 
                     // Atualizo a posição do vizinho na fila de prioridade.
-                    if (minHeap.contains(vizinho)) {
-                        minHeap.remove(vizinho); // Remove a entrada antiga.
-                    }
                     minHeap.add(vizinho); // Adiciona o vizinho com a nova distância.
                 }
             }
@@ -183,29 +184,42 @@ public class Grafo<T> implements GrafoInterface<T>{
 
         // Aqui reconstruo o grafo que representa o caminho mínimo.
         Grafo<T> caminhoMinimoGrafo = new Grafo<>();
+        Set<Vertice<T>> visitados = new HashSet<>();
         Vertice<T> passo = verticeDestino;
 
         // Vou percorrendo os antecessores a partir do destino até chegar na origem.
-        while (passo != null) {
-            // Adiciono o vértice atual ao caminho mínimo.
-            caminhoMinimoGrafo.adicionarVertice(passo.getValor());
+        while (passo != null && antecessores.get(passo) != null) {
             Vertice<T> antecessor = antecessores.get(passo);
 
-            if (antecessor != null) {
-                // Pego a aresta que conecta o antecessor ao passo atual.
-                final Vertice<T> passoFinal = passo;
+            // Adiciona vértices ao grafo mínimo, evitando duplicados.
+            if (!visitados.contains(antecessor)) {
+                caminhoMinimoGrafo.adicionarVertice(antecessor.getValor());
+                visitados.add(antecessor);
+            }
+            if (!visitados.contains(passo)) {
+                caminhoMinimoGrafo.adicionarVertice(passo.getValor());
+                visitados.add(passo);
+            }
 
-                Aresta<T> arestaOriginal = antecessor.getArestas().stream()
-                        .filter(a -> a.getDestino().equals(passoFinal))
-                        .findFirst()
-                        .orElse(null);
+            // Pego a aresta que conecta o antecessor ao passo atual.
+            final Vertice<T> passoFinal = passo;
+            Aresta<T> arestaOriginal = antecessor.getArestas().stream()
+                    .filter(a -> a.getDestino().equals(passoFinal))
+                    .findFirst()
+                    .orElse(null);
 
-                // Adiciono essa aresta ao caminho mínimo.
-                caminhoMinimoGrafo.adicionarAresta(antecessor.getValor(), passoFinal.getValor(), (float)arestaOriginal.getPeso());
+            // Adiciono essa aresta ao caminho mínimo, evitando duplicados.
+            if (arestaOriginal != null) {
+                caminhoMinimoGrafo.adicionarAresta(antecessor.getValor(), passoFinal.getValor(), arestaOriginal.getPeso());
             }
 
             // passo vira o antecessor, voltando no caminho.
             passo = antecessor;
+        }
+
+        // Adiciona o vértice de origem, se ainda não foi adicionado.
+        if (!visitados.contains(verticeOrigem)) {
+            caminhoMinimoGrafo.adicionarVertice(verticeOrigem.getValor());
         }
 
         return caminhoMinimoGrafo;

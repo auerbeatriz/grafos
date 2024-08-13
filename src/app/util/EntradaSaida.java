@@ -84,4 +84,6 @@ public class EntradaSaida {
         String linha = this.input.nextLine();
         return Float.parseFloat(linha);
     }
+
+    
 }

@@ -56,24 +56,41 @@ public class GrafoService {
                 System.out.println("Erro: A AGM calculada é nula.");
                 return new Grafo<>();
             }
+
             Grafo<String> caminhoMinimoAGM = agm.caminhoMinimo(origem, destino);
+
+            // Verificando se o caminho mínimo é nulo
+            if (caminhoMinimoAGM == null) {
+                System.out.println("Não foi possível encontrar um caminho mínimo entre " + origem + " e " + destino + ".");
+                return new Grafo<>();
+            }
 
             // Exibindo o caminho mínimo encontrado na AGM
             exibirCaminhoMinimo(caminhoMinimoAGM, origem, destino);
 
             return caminhoMinimoAGM;
         } catch (VerticeNaoEncontradoException e) {
-            System.out.println("Erro ao calcular o caminho mínimo na AGM. " + e.getMessage());
+            System.out.println("Erro ao calcular o caminho mínimo na AGM: " + e.getMessage());
             return new Grafo<>();
         } catch (VerticeDuplicadoException e) {
-            System.out.println("Erro ao calcular a AGM. " + e.getMessage());
+            System.out.println("Erro ao calcular a AGM: " + e.getMessage());
             return new Grafo<>();
         }
     }
 
     private void exibirCaminhoMinimo(Grafo<String> caminho, String origem, String destino) {
-        System.out.println("Caminho mínimo de " + origem + " até " + destino + ":");
+        if (caminho == null) {
+            System.out.println("Não é possível seguir esse caminho.");
+            return;
+        }
+
         List<Aresta<String>> arestas = caminho.getArestas();
+        if (arestas.isEmpty()) {
+            System.out.println("Não há arestas no caminho mínimo.");
+            return;
+        }
+
+        System.out.println("Caminho mínimo de " + origem + " até " + destino + ":");
         double distanciaTotal = 0.0;
 
         for (Aresta<String> aresta : arestas) {
@@ -83,6 +100,8 @@ public class GrafoService {
 
         System.out.println("Distância total: " + distanciaTotal + " km");
     }
+
+
 
     public Grafo<String> calcularAGM() throws VerticeDuplicadoException, IllegalArgumentException {
         return this.grafoDAO.calcularAGM();

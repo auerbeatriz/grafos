@@ -97,8 +97,8 @@ public class Grafo<T> implements GrafoInterface<T>{
                     Aresta<T> novaAresta = new Aresta<>(verticeOrigem, verticeDestino, arestaMenorPeso.getPeso());
                     verticeOrigem.addAresta(novaAresta);
 
-                    Aresta<T> novaArestaVolta = new Aresta<>(verticeDestino, verticeOrigem, arestaMenorPeso.getPeso());
-                    verticeDestino.addAresta(novaArestaVolta);
+                    /*Aresta<T> novaArestaVolta = new Aresta<>(verticeDestino, verticeOrigem, arestaMenorPeso.getPeso());
+                    verticeDestino.addAresta(novaArestaVolta);*/
 
                     minHeap.addAll(arestasByVertice.get(destino));
                 }
@@ -136,8 +136,13 @@ public class Grafo<T> implements GrafoInterface<T>{
         Vertice<T> verticeOrigem = this.getVertice((T) origem);
         Vertice<T> verticeDestino = this.getVertice((T) destino);
 
-        // Se não encontrar no grafo, retorno null.
+        // Se não encontrar os vértices no grafo, retorno null.
         if (verticeOrigem == null || verticeDestino == null) {
+            return null;
+        }
+
+        // Verifica se o destino é alcançável a partir da origem
+        if (!isAlcancavel(verticeOrigem, verticeDestino)) {
             return null;
         }
 
@@ -190,6 +195,11 @@ public class Grafo<T> implements GrafoInterface<T>{
         Set<Vertice<T>> visitados = new HashSet<>();
         Vertice<T> passo = verticeDestino;
 
+        // Se o destino não foi alcançado, retornamos null.
+        if (distancias.get(verticeDestino) == Float.MAX_VALUE) {
+            return null;
+        }
+
         // Vou percorrendo os antecessores a partir do destino até chegar na origem.
         while (passo != null && antecessores.get(passo) != null) {
             Vertice<T> antecessor = antecessores.get(passo);
@@ -227,6 +237,33 @@ public class Grafo<T> implements GrafoInterface<T>{
 
         return caminhoMinimoGrafo;
     }
+
+    // Método para verificar se o destino é alcançável a partir da origem usando BFS
+    private boolean isAlcancavel(Vertice<T> origem, Vertice<T> destino) {
+        Set<Vertice<T>> visitados = new HashSet<>();
+        Queue<Vertice<T>> fila = new LinkedList<>();
+        fila.add(origem);
+        visitados.add(origem);
+
+        while (!fila.isEmpty()) {
+            Vertice<T> atual = fila.poll();
+
+            if (atual.equals(destino)) {
+                return true;
+            }
+
+            for (Aresta<T> aresta : atual.getArestas()) {
+                Vertice<T> vizinho = aresta.getDestino();
+                if (!visitados.contains(vizinho)) {
+                    visitados.add(vizinho);
+                    fila.add(vizinho);
+                }
+            }
+        }
+
+        return false;
+    }
+
 
     public boolean contem(T valor) {
         for(Vertice<T> vertice : this.vertices) {
